@@ -1,0 +1,869 @@
+{% extends 'base.html' %}
+{% load static %}
+<title>Contact - {{ about.full_name|default:"Portfolio" }}</title>
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<style>
+
+    /* ====== Global Styles ====== */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3a0ca3;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --text-color: #495057;
+    --border-color: #dee2e6;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+}
+
+/* ===== CONTACT SECTION ===== */
+.contact-section {
+    padding: 60px 0;
+    background: #f8f9fa;
+    min-height: 70vh;
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #4361ee;
+    border-radius: 2px;
+}
+
+.section-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 25px auto 0;
+    line-height: 1.6;
+}
+
+/* ===== CONTACT GRID ===== */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+@media (max-width: 992px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ===== CONTACT INFO CARD ===== */
+.contact-info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    height: fit-content;
+}
+
+.contact-info-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.contact-info-card > p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* ===== CONTACT ITEMS ===== */
+.contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.contact-item:hover {
+    background: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.1);
+    border-color: #4361ee;
+}
+
+.contact-item-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    background: #4361ee;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover .contact-item-icon {
+    background: #3a0ca3;
+    transform: rotate(5deg);
+}
+
+.contact-item-icon i {
+    font-size: 1.25rem;
+    color: white;
+}
+
+.contact-item-content h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.contact-item-content p,
+.contact-item-content a {
+    font-size: 1rem;
+    color: #212529 !important;
+    text-decoration: none;
+    line-height: 1.5;
+    font-weight: 500;
+    display: block;
+}
+
+.contact-item-content a:hover {
+    color: #4361ee !important;
+}
+
+/* ===== SOCIAL LINKS ===== */
+.social-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.social-section h4 {
+    font-size: 1.1rem;
+    color: #212529;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+.social-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4361ee;
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.social-link:hover {
+    background: #4361ee;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    border-color: #4361ee;
+}
+
+/* ===== MAP ===== */
+.map-container {
+    margin-top: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ===== CONTACT FORM CARD ===== */
+.contact-form-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.contact-form-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.contact-form-card > p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* ===== FORM STYLES ===== */
+.contact-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #212529;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #212529 !important;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* ===== SUMMERNOTE FIX ===== */
+.note-editor {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+.note-editor.note-frame {
+    margin-bottom: 0 !important;
+}
+
+.note-editor .note-editing-area {
+    background: white !important;
+}
+
+.note-editor .note-editable {
+    background: white !important;
+    color: #212529 !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    padding: 1rem !important;
+    min-height: 150px !important;
+}
+
+.note-editor .note-toolbar {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.note-btn {
+    background: white !important;
+    border: 1px solid #dee2e6 !important;
+    color: #495057 !important;
+    border-radius: 4px !important;
+}
+
+.note-btn:hover {
+    background: #4361ee !important;
+    color: white !important;
+    border-color: #4361ee !important;
+}
+
+/* ===== FORM VALIDATION ===== */
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+    background: #fff8f8 !important;
+}
+
+.form-control.is-valid {
+    border-color: #28a745 !important;
+    background: #f8fff9 !important;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #3a0ca3, #4361ee);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== STATUS MESSAGES ===== */
+.status-messages {
+    margin: 1.5rem 0;
+}
+
+.status-message {
+    display: none;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.loading-message {
+    background: #f0f7ff;
+    color: #4361ee;
+    border: 1px solid #cce5ff;
+}
+
+.error-message {
+    background: #fff8f8;
+    color: #dc3545;
+    border: 1px solid #f8d7da;
+}
+
+.success-message {
+    background: #f8fff9;
+    color: #28a745;
+    border: 1px solid #d4edda;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .page-title {
+        padding: 60px 0 30px;
+    }
+    
+    .page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .contact-section {
+        padding: 40px 0;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+    
+    .contact-info-card,
+    .contact-form-card {
+        padding: 1.5rem;
+    }
+    
+    .contact-item {
+        padding: 1rem;
+    }
+    
+    .contact-item-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        margin-right: 1rem;
+    }
+    
+    .contact-item-icon i {
+        font-size: 1.1rem;
+    }
+    
+    .contact-item-content h4 {
+        font-size: 0.85rem;
+    }
+    
+    .contact-item-content p,
+    .contact-item-content a {
+        font-size: 0.95rem;
+    }
+    
+    .social-link {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .map-container {
+        height: 180px;
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.word-break {
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Title -->
+<div class="page-title mt-0 dark-background">
+  <div class="container d-lg-flex justify-content-between align-items-center">
+    <h1 class="mb-2 mb-lg-0">Contact Me</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'portfolio:home' %}">Home</a></li>
+        <li class="current">Contact</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<section class="contact-section">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="section-header" data-aos="fade-up">
+      <h2>Get in Touch</h2>
+      <p>Feel free to reach out for collaborations, projects, or just to say hello</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact Information Card -->
+      <div class="contact-info-card" data-aos="fade-up" data-aos-delay="100">
+        <h3>Contact Information</h3>
+        <p>Feel free to reach out through any of these channels</p>
+
+        <div class="contact-items">
+          <!-- Location -->
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="contact-item-content">
+              <h4>Location</h4>
+              <p>{{ about.address|default:"Ghodaghodi-2, Nepal"|safe|linebreaksbr }}</p>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <i class="bi bi-envelope"></i>
+            </div>
+            <div class="contact-item-content">
+              <h4>Email Address</h4>
+              <a href="mailto:{{ about.email|default:'contact@example.com' }}" 
+                 class="word-break" 
+                 title="{{ about.email|default:'contact@example.com' }}">
+                {{ about.email|default:"contact@example.com" }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="contact-item">
+            <div class="contact-item-icon">
+              <i class="bi bi-phone"></i>
+            </div>
+            <div class="contact-item-content">
+              <h4>Phone Number</h4>
+              <a href="tel:{{ about.phone|default:'+9779841000000' }}">
+                {{ about.phone|default:"+977 9841 000 000" }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        {% if about.twitter_url or about.github_url or about.linkedin_url %}
+        <div class="social-section">
+          <h4>Follow Me</h4>
+          <div class="social-links">
+            {% if about.twitter_url %}
+            <a href="{{ about.twitter_url }}" target="_blank" class="social-link" title="Twitter">
+              <i class="bi bi-twitter-x"></i>
+            </a>
+            {% endif %}
+            
+            {% if about.github_url %}
+            <a href="{{ about.github_url }}" target="_blank" class="social-link" title="GitHub">
+              <i class="bi bi-github"></i>
+            </a>
+            {% endif %}
+            
+            {% if about.linkedin_url %}
+            <a href="{{ about.linkedin_url }}" target="_blank" class="social-link" title="LinkedIn">
+              <i class="bi bi-linkedin"></i>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Map -->
+        <div class="map-container mt-4">
+          <iframe 
+            src="{{ about.google_map_url|default:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.4640151637564!2d85.32393731505463!3d27.703551982793608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1908434cb3c9%3A0x2b1b5a5b5a5b5a5b!2sKathmandu%2044600%2C%20Nepal!5e0!3m2!1sen!2snp!4v1645436789045!5m2!1sen!2snp' }}" 
+            allowfullscreen 
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Contact Form Card -->
+      <div class="contact-form-card" data-aos="fade-up" data-aos-delay="200">
+        <h3>Send a Message</h3>
+        <p>Fill out the form and I'll get back to you within 24 hours</p>
+
+        <form method="post" class="contact-form" id="contactForm">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger rounded-3 p-3 mb-4">
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label for="id_name">Full Name *</label>
+            <input type="text" 
+                   name="name" 
+                   class="form-control" 
+                   id="id_name" 
+                   placeholder="Your full name"
+                   value="{{ form.name.value|default:'' }}"
+                   required>
+            {% if form.name.errors %}
+            <div class="invalid-feedback">
+              {{ form.name.errors }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="id_email">Email Address *</label>
+            <input type="email" 
+                   name="email" 
+                   class="form-control" 
+                   id="id_email" 
+                   placeholder="your.email@example.com"
+                   value="{{ form.email.value|default:'' }}"
+                   required>
+            {% if form.email.errors %}
+            <div class="invalid-feedback">
+              {{ form.email.errors }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="id_subject">Subject *</label>
+            <input type="text" 
+                   name="subject" 
+                   class="form-control" 
+                   id="id_subject" 
+                   placeholder="Regarding your project"
+                   value="{{ form.subject.value|default:'' }}"
+                   required>
+            {% if form.subject.errors %}
+            <div class="invalid-feedback">
+              {{ form.subject.errors }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="summernote">Message *</label>
+            <textarea id="summernote" name="message">{{ form.message.value|default:'' }}</textarea>
+            <input type="hidden" name="message" id="message_input">
+            {% if form.message.errors %}
+            <div class="invalid-feedback">
+              {{ form.message.errors }}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Status Messages -->
+          <div class="status-messages">
+            <div class="status-message loading-message">
+              <i class="bi bi-arrow-repeat spin me-2"></i>
+              Sending your message...
+            </div>
+            <div class="status-message error-message"></div>
+            <div class="status-message success-message">
+              <i class="bi bi-check-circle me-2"></i>
+              Message sent successfully!
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <i class="bi bi-send"></i>
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Initialize Summernote with proper styling
+    $('#summernote').summernote({
+        placeholder: 'Write your message here...',
+        tabsize: 2,
+        height: 180,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        callbacks: {
+            onInit: function() {
+                // Force text color
+                $('.note-editable').css({
+                    'color': '#212529',
+                    'background': 'white'
+                });
+            },
+            onChange: function(contents) {
+                $('#message_input').val(contents);
+                $('.note-editable').css('color', '#212529');
+            }
+        }
+    });
+
+    // Handle form submission
+    const form = document.getElementById('contactForm');
+    const loadingMsg = document.querySelector('.loading-message');
+    const errorMsg = document.querySelector('.error-message');
+    const successMsg = document.querySelector('.success-message');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Update hidden input with Summernote content
+        const summernoteContent = $('#summernote').summernote('code');
+        $('#message_input').val(summernoteContent);
+        
+        // Validate required fields
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        });
+        
+        // Validate Summernote content
+        if (!summernoteContent || summernoteContent === '<p><br></p>' || summernoteContent.trim() === '') {
+            $('.note-editable').css('border', '1px solid #dc3545');
+            isValid = false;
+        } else {
+            $('.note-editable').css('border', '');
+        }
+        
+        if (!isValid) {
+            errorMsg.textContent = 'Please fill in all required fields.';
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 4000);
+            return;
+        }
+        
+        // Show loading state
+        loadingMsg.style.display = 'block';
+        errorMsg.style.display = 'none';
+        successMsg.style.display = 'none';
+        
+        // Prepare form data
+        const formData = new FormData(form);
+        
+        // Send AJAX request
+        fetch(form.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingMsg.style.display = 'none';
+            
+            if (data.success) {
+                successMsg.style.display = 'block';
+                form.reset();
+                $('#summernote').summernote('reset');
+                
+                // Clear validation classes
+                form.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+                    el.classList.remove('is-valid', 'is-invalid');
+                });
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 5000);
+            } else {
+                errorMsg.textContent = data.errors || 'Something went wrong. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            loadingMsg.style.display = 'none';
+            errorMsg.textContent = 'Network error. Please check your connection.';
+            errorMsg.style.display = 'block';
+            console.error('Error:', error);
+        });
+    });
+    
+    // Real-time validation
+    form.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.hasAttribute('required') && !this.value.trim()) {
+                this.classList.add('is-invalid');
+            }
+        });
+    });
+    
+    // Summernote content validation
+    $('#summernote').on('summernote.change', function() {
+        const content = $('#summernote').summernote('code');
+        if (content && content !== '<p><br></p>' && content.trim() !== '') {
+            $('.note-editable').css('border', '');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- templates/partials/footer.html -->
+<footer id="footer" class="footer position-relative light-background">
+  <div class="container">
+    <div class="copyright text-center">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">{{ about.full_name|default:"Nishan Chaudhary" }}</strong> <span>All Rights Reserved</span> - {% now "Y" %}</p>
+    </div>
+    <div class="credits">
+      Designed by <a href="https://github.com/Nishanchaudhary">Nishan Chaudhary</a>
+      {% if about.email %}
+      | <a href="mailto:{{ about.email }}">Contact Me</a>
+      {% endif %}
+    </div>
+  </div>
+</footer>

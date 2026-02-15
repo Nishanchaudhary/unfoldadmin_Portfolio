@@ -1,0 +1,349 @@
+<!-- templates/portfolio/services.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Services - {{ about.full_name|default:"Portfolio" }}</title>
+{% endblock %}
+
+{% block content %}
+<!-- Page Title -->
+<div class="page-title dark-background">
+  <div class="container d-lg-flex justify-content-between align-items-center">
+    <h1 class="mb-2 mb-lg-0">Services</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'portfolio:home' %}">Home</a></li>
+        <li class="current">Services</li>
+      </ol>
+    </nav>
+  </div>
+</div><!-- End Page Title -->
+
+<!-- Services Section -->
+<section id="services" class="services-section py-5">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="section-header text-center mb-5" data-aos="fade-up">
+      <h2 class="section-title">Professional Services</h2>
+      <p class="section-subtitle">Comprehensive solutions tailored to your needs</p>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="row g-4">
+      {% for service in services %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="service-card"
+          style="background: white; border-radius: 15px; padding: 2rem; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; height: 100%; position: relative; overflow: hidden;">
+          <!-- Service Icon -->
+          <div class="service-icon-wrapper" style="margin-bottom: 1.5rem;">
+            <div class="service-icon-circle"
+              style="width: 80px; height: 80px; background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; transition: all 0.3s ease;">
+              <i class="{{ service.icon|default:'bi bi-briefcase' }}"
+                style="font-size: 2rem; color: white; transition: all 0.3s ease;"></i>
+            </div>
+          </div>
+
+          <!-- Service Content -->
+          <div class="service-content">
+            <h3 class="service-title" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #212529;">
+              {{ service.title }}</h3>
+            <div class="service-description"
+              style="color: #495057; margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.6;">
+              {{ service.description.html|safe }}
+            </div>
+
+            <a href="{% url 'portfolio:contact' %}" class="service-link"
+              style="color: #4361ee; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; position: relative; z-index: 10;">
+              Get in Touch <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+
+          <!-- Hover Effect Overlay -->
+          <div class="service-hover-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(67, 97, 238, 0.05); opacity: 0; transition: all 0.3s ease;">
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center" data-aos="fade-up">
+        <div style="background: white; border-radius: 15px; padding: 3rem; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+          <i class="bi bi-tools" style="font-size: 3rem; color: #dee2e6; margin-bottom: 1rem;"></i>
+          <h4 class="mb-3" style="color: #212529;">No Services Available</h4>
+          <p class="text-muted" style="max-width: 400px; margin: 0 auto;">Services will be added soon. Please check back
+            later.</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-5" data-aos="fade-up" data-aos-delay="400">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
+    <!-- Contact CTA -->
+    <div class="row mt-5" data-aos="fade-up" data-aos-delay="500">
+      <div class="col-12">
+        <div class="cta-card"
+          style="background: linear-gradient(135deg, #4361ee, #3a0ca3); border-radius: 15px; padding: 3rem; text-align: center; color: white;">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Ready to Work Together?</h2>
+          <p
+            style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Have a project in mind? Let's discuss how I can help bring your ideas to life.
+          </p>
+          <div class="cta-buttons">
+            <a href="{% url 'portfolio:contact' %}" class="btn btn-light btn-lg me-3"
+              style="border-radius: 25px; padding: 0.75rem 2rem; font-weight: 600;">
+              <i class="bi bi-envelope me-2"></i> Contact Me
+            </a>
+            <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-light btn-lg"
+              style="border-radius: 25px; padding: 0.75rem 2rem; font-weight: 600;">
+              <i class="bi bi-briefcase me-2"></i> View My Work
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /Services Section -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  /* ====== Global Styles ====== */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3a0ca3;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --text-color: #495057;
+    --border-color: #dee2e6;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+}
+
+  /* Service Card Hover Effects */
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .service-card:hover .service-icon-circle {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+  }
+
+  .service-card:hover .service-hover-overlay {
+    opacity: 1;
+  }
+
+  .service-card:hover .service-link {
+    gap: 1rem;
+    color: #3a0ca3;
+  }
+
+  /* Service Icon Animation */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .service-icon-circle {
+    animation: pulse 3s infinite ease-in-out;
+  }
+
+  .service-card:hover .service-icon-circle {
+    animation: none;
+  }
+
+  /* Pagination Styling */
+  .page-item.active .page-link {
+    background-color: #4361ee;
+    border-color: #4361ee;
+  }
+
+  .page-link {
+    color: #4361ee;
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    border: 1px solid #dee2e6;
+  }
+
+  .page-link:hover {
+    color: #3a0ca3;
+    background-color: #f8f9fa;
+  }
+
+  /* Button Hover Effects */
+  .btn-light:hover {
+    background: #f8f9fa !important;
+    color: #212529 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-outline-light:hover {
+    background: white !important;
+    color: #4361ee !important;
+    transform: translateY(-2px);
+  }
+
+  /* Smooth Transitions */
+  .service-card,
+  .service-icon-circle,
+  .service-link,
+  .btn-light,
+  .btn-outline-light {
+    transition: all 0.3s ease;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .service-card {
+      padding: 1.5rem !important;
+    }
+
+    .service-icon-circle {
+      width: 70px !important;
+      height: 70px !important;
+    }
+
+    .service-icon-circle i {
+      font-size: 1.75rem !important;
+    }
+
+    .service-title {
+      font-size: 1.3rem !important;
+    }
+
+    .cta-card {
+      padding: 2rem !important;
+    }
+
+    .cta-card h2 {
+      font-size: 1.5rem !important;
+    }
+
+    .cta-buttons .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      margin-right: 0 !important;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .service-card {
+      padding: 1.25rem !important;
+    }
+
+    .service-icon-circle {
+      width: 60px !important;
+      height: 60px !important;
+    }
+
+    .service-icon-circle i {
+      font-size: 1.5rem !important;
+    }
+
+    .service-title {
+      font-size: 1.2rem !important;
+    }
+
+    .cta-card {
+      padding: 1.5rem !important;
+    }
+
+    .cta-card h2 {
+      font-size: 1.3rem !important;
+    }
+
+    .cta-card p {
+      font-size: 1rem !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Add hover effects to service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach(card => {
+      card.addEventListener('mouseenter', function () {
+        const iconCircle = this.querySelector('.service-icon-circle');
+        const overlay = this.querySelector('.service-hover-overlay');
+        const link = this.querySelector('.service-link');
+
+        if (iconCircle) iconCircle.style.transform = 'scale(1.1) rotate(5deg)';
+        if (overlay) overlay.style.opacity = '1';
+        if (link) link.style.gap = '1rem';
+      });
+
+      card.addEventListener('mouseleave', function () {
+        const iconCircle = this.querySelector('.service-icon-circle');
+        const overlay = this.querySelector('.service-hover-overlay');
+        const link = this.querySelector('.service-link');
+
+        if (iconCircle) iconCircle.style.transform = 'scale(1) rotate(0)';
+        if (overlay) overlay.style.opacity = '0';
+        if (link) link.style.gap = '0.5rem';
+      });
+    });
+
+    // Smooth scroll for contact links
+    const contactLinks = document.querySelectorAll('a[href="#contact"]');
+    contactLinks.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          window.scrollTo({
+            top: contactSection.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

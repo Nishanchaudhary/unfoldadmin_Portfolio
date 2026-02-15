@@ -1,0 +1,1819 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>{{ about.full_name|default:"Portfolio" }} - Home</title>
+{% endblock %}
+
+{% block body_class %}index-page{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+    <!-- Video background (shown on desktop) -->
+    <div class="hero-video-container">
+        <video autoplay muted loop playsinline class="hero-background hero-desktop-video">
+            <source src="{% static 'assets/video/hero-video.mp4' %}" type="video/mp4">
+        </video>
+        <!-- Static fallback image (for mobile and video fallback) -->
+        <img src="{% static 'img/nishan.jpg' %}" alt="{{ about.full_name }}" class="hero-fallback-image">
+    </div>
+
+    <div class="hero-content">
+        <div class="container">
+            <h1 class="hero-title" data-aos="fade-up">{{ about.full_name|default:"Your Name" }}</h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">
+                I'm a <span class="typed-text" data-typed-items="{{ about.title|default:'Web Developer' }}">{{ about.title|default:"Web Developer" }}</span>
+            </p>
+            <p class="hero-description" data-aos="fade-up" data-aos-delay="200">
+                {{ about.bio.html|striptags|truncatewords:30 }}
+            </p>
+            <div class="hero-buttons mt-4" data-aos="fade-up" data-aos-delay="300">
+                <a href="{% url 'portfolio:contact' %}" class="btn btn-primary btn-lg me-3">Contact Me</a>
+                <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-light btn-lg">View Portfolio</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /Hero Section -->
+
+<!-- About Section -->
+<section id="about" class="about-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 mb-4 mb-lg-0" data-aos="fade-right">
+                <div class="about-image-wrapper">
+                    {% if about.profile_image %}
+                    <img src="{{ about.profile_image.url }}" alt="{{ about.full_name }}" class="about-image">
+                    {% else %}
+                    <img src="{% static 'assets/img/my-profile-img.jpg' %}" alt="Profile" class="about-image">
+                    {% endif %}
+                    <div class="about-image-overlay"></div>
+                </div>
+            </div>
+            <div class="col-lg-8" data-aos="fade-left">
+                <div class="section-header mb-4">
+                    <h2 class="section-title">About Me</h2>
+                    <p class="section-subtitle">{{ about.title|default:"Full Stack Developer" }}</p>
+                </div>
+                <div class="about-content mb-4">
+                    {{ about.bio.html|safe }}
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {% if about.phone %}
+                        <div class="info-item">
+                            <i class="bi bi-telephone info-icon"></i>
+                            <div>
+                                <strong>Phone:</strong>
+                                <a href="tel:{{ about.phone }}" class="info-link">{{ about.phone }}</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if about.email %}
+                        <div class="info-item">
+                            <i class="bi bi-envelope info-icon"></i>
+                            <div>
+                                <strong>Email:</strong>
+                                <a href="mailto:{{ about.email }}" class="info-link">{{ about.email }}</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if about.address %}
+                        <div class="info-item">
+                            <i class="bi bi-geo-alt info-icon"></i>
+                            <div>
+                                <strong>Location:</strong>
+                                <span>{{ about.address|safe }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <i class="bi bi-briefcase info-icon"></i>
+                            <div>
+                                <strong>Status:</strong>
+                                <span class="badge bg-success">Available for Freelance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if about.resume %}
+                <a href="{% url 'portfolio:download_resume' %}" class="btn btn-primary mt-4">
+                    <i class="bi bi-download me-2"></i>Download Resume
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /About Section -->
+
+<!-- Skills Section -->
+<section id="skills" class="skills-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Technical Skills</h2>
+            <p class="section-subtitle">My expertise and proficiency levels</p>
+        </div>
+        
+        {% if skills %}
+        <div class="row" data-aos="fade-up">
+            <div class="col-12">
+                <div class="skills-container">
+                    {% for skill in skills %}
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <span class="skill-percentage">{{ skill.proficiency }}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="{{ skill.proficiency }}"></div>
+                        </div>
+                        {% if skill.category %}
+                        <div class="skill-category">
+                            <span class="badge bg-secondary">{{ skill.category|title }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center" data-aos="fade-up">
+            <p class="text-muted">No skills added yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+<!-- /Skills Section -->
+
+<!-- Services Section -->
+<section id="services" class="services-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">My Services</h2>
+            <p class="section-subtitle">Professional services I offer</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <div class="service-icon-circle">
+                            <i class="{{ service.icon|default:'bi bi-briefcase' }}"></i>
+                        </div>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">{{ service.title }}</h3>
+                        <div class="service-description">
+                            {{ service.description.html|safe|truncatewords_html:25 }}
+                        </div>
+                        <a href="{% url 'portfolio:services' %}" class="service-link">
+                            Learn More <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No services added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if services %}
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'portfolio:services' %}" class="btn btn-outline-primary btn-lg">View All Services</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+<!-- /Services Section -->
+
+<!-- Projects Section -->
+<section id="projects" class="projects-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-subtitle">Some of my recent work</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="project-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; height: 100%;">
+                    {% if project.featured_image %}
+                    <div class="project-image-wrapper" style="position: relative; height: 250px; overflow: hidden;">
+                        <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" 
+                             style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
+                        
+                        <!-- Hover Overlay with Details -->
+                        <div class="project-hover-overlay" 
+                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(67, 97, 238, 0.95); color: white; opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; padding: 1.5rem; text-align: center;">
+                            <div class="hover-content">
+                                <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: white;">{{ project.title }}</h4>
+                                
+                                <!-- Conditional: Client/Company -->
+                                {% if project.client_name or project.company %}
+                                <div class="project-client mb-2" style="font-size: 0.9rem;">
+                                    {% if project.client_name %}<strong>Client:</strong> {{ project.client_name }}{% endif %}
+                                    {% if project.company %}{% if project.client_name %} • {% endif %}{{ project.company }}{% endif %}
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Project Description Excerpt -->
+                                <div class="project-description-hover mb-3" style="font-size: 0.85rem;">
+                                    {{ project.description.html|striptags|truncatewords:20 }}
+                                </div>
+                                
+                                <!-- Technologies in Hover -->
+                                {% if project.technologies %}
+                                <div class="project-technologies-hover mb-3">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center;">
+                                        {% for tech in project.technologies|slice:":5" %}
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
+                                            {{ tech }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- View Details Button -->
+                                <div class="project-hover-action mt-3">
+                                    <a href="{% url 'portfolio:project_detail' project.id %}" 
+                                       class="btn btn-light" 
+                                       style="border-radius: 25px; padding: 0.5rem 1.5rem; font-size: 0.9rem;">
+                                        View Details <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Project Info Below Image (Always Visible) -->
+                    <div class="project-info-below" style="padding: 1.5rem;">
+                        <!-- Project Title -->
+                        <h3 class="project-title" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #212529;">{{ project.title }}</h3>
+                        
+                        <!-- Project Type Badge -->
+                        <div class="project-category mb-2">
+                            <span class="badge bg-primary" style="font-size: 0.75rem; padding: 0.3rem 0.7rem;">
+                                {{ project.project_type|title }}
+                            </span>
+                        </div>
+                        
+                        <!-- Action Icons Row -->
+                        <div class="project-action-icons" style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <!-- View Details Link -->
+                            <a href="{% url 'portfolio:project_detail' project.id %}" 
+                               class="action-icon" 
+                               title="View Details"
+                               style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                                <i class="bi bi-eye" style="font-size: 1.1rem;"></i>
+                            </a>
+                            
+                            <!-- Conditional: Live Demo Link -->
+                            {% if project.demo_url %}
+                            <a href="{{ project.demo_url }}" target="_blank" 
+                               class="action-icon" 
+                               title="Live Demo"
+                               style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                                <i class="bi bi-play-circle" style="font-size: 1.1rem;"></i>
+                            </a>
+                            {% endif %}
+                            
+                            <!-- Conditional: GitHub Link -->
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" 
+                               class="action-icon" 
+                               title="GitHub Repository"
+                               style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                                <i class="bi bi-github" style="font-size: 1.1rem;"></i>
+                            </a>
+                            {% endif %}
+                            
+                            <!-- Conditional: Gallery Image -->
+                            {% if project.featured_image %}
+                            <a href="{{ project.featured_image.url }}" 
+                               title="{{ project.title }}" 
+                               data-gallery="project-gallery" 
+                               class="action-icon glightbox"
+                               style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                                <i class="bi bi-image" style="font-size: 1.1rem;"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No projects added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if featured_projects %}
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary btn-lg">View All Projects</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+<!-- /Projects Section -->
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Client Testimonials</h2>
+            <p class="section-subtitle">What people say about my work</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= testimonial.rating %}
+                        <i class="bi bi-star-fill text-warning"></i>
+                        {% else %}
+                        <i class="bi bi-star text-warning"></i>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="testimonial-text">
+                        "{{ testimonial.content.html|striptags|truncatewords:25 }}"
+                    </p>
+                    <div class="testimonial-author">
+                        {% if testimonial.client_image %}
+                        <img src="{{ testimonial.client_image.url }}" alt="{{ testimonial.client_name }}" class="testimonial-avatar">
+                        {% else %}
+                        <div class="testimonial-avatar-placeholder">
+                            {{ testimonial.client_name|first|upper }}
+                        </div>
+                        {% endif %}
+                        <div class="testimonial-info">
+                            <h4 class="author-name">{{ testimonial.client_name }}</h4>
+                            <p class="author-title">{{ testimonial.client_title }}{% if testimonial.company %} • {{ testimonial.company }}{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No testimonials added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- /Testimonials Section -->
+
+<!-- Blog Section -->
+<section id="blog" class="blog-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Latest Blog Posts</h2>
+            <p class="section-subtitle">Recent articles and insights</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for post in blog_posts %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="blog-card">
+                    {% if post.featured_image %}
+                    <div class="blog-image">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                        <div class="blog-date">
+                            <span>{{ post.published_date|date:"d" }}</span>
+                            <small>{{ post.published_date|date:"M" }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span class="blog-category">{{ post.tags|default:"General" }}</span>
+                            <span class="blog-read-time">3 min read</span>
+                        </div>
+                        <h3 class="blog-title">{{ post.title }}</h3>
+                        <p class="blog-excerpt">{{ post.excerpt|safe|truncatewords:15 }}</p>
+                        <div class="blog-footer">
+                            <a href="{% url 'portfolio:blog_detail' post.slug %}" class="blog-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No blog posts yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if blog_posts %}
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'portfolio:blog_list' %}" class="btn btn-outline-primary btn-lg">View All Blog Posts</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+<!-- /Blog Section -->
+
+<!-- Certificates Section -->
+<section id="certificates" class="certificates-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Certifications</h2>
+            <p class="section-subtitle">My professional certifications and achievements</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for certificate in certificates %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="certificate-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; height: 100%;">
+                    {% if certificate.image %}
+                    <div class="certificate-image-wrapper" style="position: relative; height: 250px; overflow: hidden;">
+                        <!-- Clickable Image -->
+                        <a href="{{ certificate.image.url }}" data-gallery="certificate-gallery" data-title="{{ certificate.name }}" class="glightbox" style="display: block; width: 100%; height: 100%;">
+                            <img src="{{ certificate.image.url }}" alt="{{ certificate.name }}" 
+                                 style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
+                        </a>
+                    </div>
+                    {% endif %}
+                    <!-- Certificate Info Below Image -->
+                    <div class="certificate-info" style="padding: 1.5rem;">
+                        <h3 class="certificate-title" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #212529;">{{ certificate.name }}</h3>
+                        <p class="certificate-issuer" style="color: #4361ee; font-weight: 500; margin-bottom: 1rem; font-size: 0.95rem;">{{ certificate.issuer }}</p>
+                        
+                        <!-- Skills/Technologies (from reference) -->
+                        {% if certificate.skills %}
+                        <div class="certificate-skills mb-3">
+                            <strong style="font-size: 0.9rem;">Skills:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem;">
+                                {{ certificate.skills|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Issue Date -->
+                        <div class="certificate-date" style="font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem;">
+                            <i class="bi bi-calendar me-1"></i>Issued: {{ certificate.issue_date|date:"M Y" }}
+                            {% if certificate.expiry_date %}
+                            <br><i class="bi bi-calendar-x me-1"></i>Expires: {{ certificate.expiry_date|date:"M Y" }}
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Verify Button -->
+                        {% if certificate.certificate_url %}
+                        <a href="{{ certificate.certificate_url }}" target="_blank" 
+                           class="btn btn-sm btn-outline-primary" 
+                           style="padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem;">
+                            <i class="bi bi-link-45deg me-1"></i>Verify Certificate
+                        </a>
+                        {% endif %}
+                        
+                        <!-- Credential ID if exists -->
+                        {% if certificate.credential_id %}
+                        <div class="credential-id mt-2" style="font-size: 0.8rem; color: #6c757d;">
+                            <i class="bi bi-hash me-1"></i>ID: {{ certificate.credential_id }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No certificates added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- /Certificates Section -->
+
+<!-- Gallery Section -->
+<section id="gallery" class="gallery-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Gallery</h2>
+            <p class="section-subtitle">Visual showcase of my work and experiences</p>
+        </div>
+        
+        <div class="row g-3">
+            {% for item in gallery_items %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="gallery-item">
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="gallery-image">
+                    <div class="gallery-caption">
+                        <h6 class="text-light"  >{{ item.title }}</h6>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center" data-aos="fade-up">
+                <p class="text-muted">No gallery items added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if gallery_items %}
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'portfolio:gallery' %}" class="btn btn-primary btn-lg">View Full Gallery</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+<!-- /Gallery Section -->
+
+<!-- FAQ Section -->
+<section id="faq" class="faq-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Common questions about my services</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    {% for item in faq %}
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#faq{{ forloop.counter }}">
+                                <span class="accordion-icon me-3">
+                                    <i class="bi bi-question-circle"></i>
+                                </span>
+                                {{ item.question }}
+                            </button>
+                        </h3>
+                        <div id="faq{{ forloop.counter }}" class="accordion-collapse collapse" 
+                             data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="faq-answer">
+                                    {{ item.answer.html|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center" data-aos="fade-up">
+                        <p class="text-muted">No FAQs added yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /FAQ Section -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ====== Global Styles ====== */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3a0ca3;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --text-color: #495057;
+    --border-color: #dee2e6;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* ====== Section Styles ====== */
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.bg-light {
+    background-color: var(--light-color) !important;
+}
+
+/* ====== Hero Section with 3D Effects ====== */
+.hero-section {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+.hero-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-desktop-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.hero-fallback-image {
+    display: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding-top: 80px;
+}
+
+/* 3D Text Effects for Hero Title */
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    position: relative;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-shadow: 
+        1px 1px 0 #999,
+        2px 2px 0 #888,
+        3px 3px 0 #777,
+        4px 4px 0 #666,
+        5px 5px 0 #555,
+        6px 6px 0 #444,
+        7px 7px 5px rgba(0,0,0,0.5);
+    transform: perspective(500px) rotateX(15deg);
+    animation: float3dTitle 4s ease-in-out infinite;
+}
+
+@keyframes float3dTitle {
+    0%, 100% {
+        transform: perspective(500px) rotateX(15deg) translateY(0);
+        text-shadow: 
+            1px 1px 0 #999,
+            2px 2px 0 #888,
+            3px 3px 0 #777,
+            4px 4px 0 #666,
+            5px 5px 0 #555,
+            6px 6px 0 #444,
+            7px 7px 5px rgba(0,0,0,0.5);
+    }
+    50% {
+        transform: perspective(500px) rotateX(15deg) translateY(-10px);
+        text-shadow: 
+            2px 2px 0 #999,
+            3px 3px 0 #888,
+            4px 4px 0 #777,
+            5px 5px 0 #666,
+            6px 6px 0 #555,
+            7px 7px 0 #444,
+            8px 8px 8px rgba(0,0,0,0.6);
+    }
+}
+
+.hero-subtitle {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 3D Typed Text Effect */
+.typed-text {
+    font-weight: 800;
+    color: #ff6b6b;
+    position: relative;
+    display: inline-block;
+    text-shadow: 
+        1px 1px 0 #527dff,
+        2px 2px 0 #527dff,
+        3px 3px 0 whitesmoke,
+        4px 4px 0 whitesmoke,
+        5px 5px 5px rgba(0,0,0,0.3);
+    transform: perspective(300px) rotateX(10deg);
+    animation: typed3dPulse 2.5s ease-in-out infinite;
+    padding: 0 10px;
+    border-bottom: 4px solid #527dff;
+    background: linear-gradient(to bottom, #6b8bff, #5258ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes typed3dPulse {
+    0%, 100% {
+        transform: perspective(300px) rotateX(10deg) scale(1);
+        text-shadow: 
+            1px 1px 0 #527dff,
+            2px 2px 0 #527dff,
+            3px 3px 0 whitesmoke,
+            4px 4px 0 whitesmoke,
+            5px 5px 5px rgba(0,0,0,0.3);
+    }
+    50% {
+        transform: perspective(300px) rotateX(10deg) scale(1.05);
+        text-shadow: 
+            1px 1px 0 #527dff,
+            2px 2px 0 #527dff,
+            3px 3px 0 whitesmoke,
+            4px 4px 0 whitesmoke,
+            5px 5px 8px rgba(0,0,0,0.4);
+    }
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ====== About Section ====== */
+.about-image-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.about-image {
+    width: 100%;
+    height: auto;
+    transition: var(--transition);
+}
+
+.about-image:hover {
+    transform: scale(1.05);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--light-color);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateX(5px);
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+    min-width: 40px;
+}
+
+.info-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.info-link:hover {
+    color: var(--secondary-color);
+}
+
+/* ====== Skills Section ====== */
+.skills-container {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.skill-item {
+    margin-bottom: 2rem;
+}
+
+.skill-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.skill-name {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.skill-percentage {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.skill-bar {
+    height: 10px;
+    background: var(--light-color);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 5px;
+    width: 0;
+    transition: width 1.5s ease-in-out;
+}
+
+.skill-category {
+    margin-top: 0.5rem;
+}
+
+/* ====== Service Cards ====== */
+.service-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.service-card:hover .service-icon-circle {
+    transform: rotate(360deg);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.service-icon-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.service-icon-circle {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--light-color), #e9ecef);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: var(--transition);
+}
+
+.service-icon-circle i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.service-card:hover .service-icon-circle i {
+    color: white;
+}
+
+.service-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.service-description {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.service-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.service-link:hover {
+    color: var(--secondary-color);
+    gap: 1rem;
+}
+
+/* ====== Project Cards ====== */
+.project-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.project-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.1);
+}
+
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(67, 97, 238, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.project-tags {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.project-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.project-content {
+    padding: 1.5rem;
+}
+
+.project-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.project-description {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.project-technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tech-badge {
+    background: var(--light-color);
+    color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* ====== Testimonial Cards ====== */
+.testimonial-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.testimonial-rating {
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.testimonial-text:before {
+    content: '"';
+    font-size: 3rem;
+    color: var(--primary-color);
+    opacity: 0.3;
+    position: absolute;
+    left: 0;
+    top: -1rem;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.testimonial-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.testimonial-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.author-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--dark-color);
+}
+
+.author-title {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* ====== Blog Cards ====== */
+.blog-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.blog-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.blog-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.blog-card:hover .blog-image img {
+    transform: scale(1.1);
+}
+
+.blog-date {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--primary-color);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.blog-date span {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.blog-date small {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.blog-content {
+    padding: 1.5rem;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.blog-category {
+    background: var(--light-color);
+    color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.blog-read-time {
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.blog-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--dark-color);
+}
+
+.blog-excerpt {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.blog-read-more {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.blog-read-more:hover {
+    color: var(--secondary-color);
+    gap: 1rem;
+}
+
+/* ====== Certificate Cards ====== */
+.certificate-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.certificate-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.certificate-image-wrapper {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.certificate-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.certificate-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(67, 97, 238, 0.95);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.certificate-card:hover .certificate-overlay {
+    opacity: 1;
+}
+
+.certificate-card:hover .certificate-image {
+    transform: scale(1.1);
+}
+
+.overlay-content {
+    text-align: center;
+}
+
+.overlay-content h4 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.overlay-issuer {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.overlay-skills {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.overlay-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.certificate-content {
+    padding: 1.5rem;
+}
+
+.certificate-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.certificate-issuer {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.certificate-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ====== Gallery Section ====== */
+.gallery-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.gallery-item:hover .gallery-image {
+    transform: scale(1.1);
+}
+
+.gallery-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(101, 100, 100, 0.8);
+    color: white;
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: var(--transition);
+}
+
+.gallery-item:hover .gallery-caption {
+    transform: translateY(0);
+}
+
+/* ====== FAQ Section ====== */
+.accordion-item {
+    border: none;
+    margin-bottom: 1rem;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.accordion-button {
+    background: white;
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 1.5rem;
+    border: none;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: var(--primary-color);
+    color: white;
+}
+
+.accordion-button:not(.collapsed) .accordion-icon {
+    color: white;
+}
+
+.accordion-icon {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.accordion-button:after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234361ee'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-button:not(.collapsed):after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-body {
+    padding: 1.5rem;
+    background: var(--light-color);
+}
+
+.faq-answer {
+    color: var(--text-color);
+}
+
+/* ====== Buttons ====== */
+.btn {
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+}
+
+.btn-outline-light {
+    color: white;
+    border: 2px solid white;
+    background: transparent;
+}
+
+.btn-outline-light:hover {
+    background: white;
+    color: var(--dark-color);
+    transform: translateY(-3px);
+}
+
+.btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+/* ====== Responsive Design ====== */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 3rem;
+        animation: none;
+        transform: none;
+        text-shadow: 
+            1px 1px 0 #999,
+            2px 2px 0 #888,
+            3px 3px 5px rgba(0,0,0,0.5);
+    }
+    
+    .typed-text {
+        animation: none;
+        transform: none;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .about-image {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-desktop-video {
+        display: none;
+    }
+    
+    .hero-fallback-image {
+        display: block;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        text-shadow: 
+            1px 1px 0 #999,
+            2px 2px 0 #888,
+            3px 3px 5px rgba(0,0,0,0.5);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+    }
+    
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+        margin-right: 0 !important;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .skills-container {
+        padding: 1.5rem;
+    }
+    
+    .service-card,
+    .project-card,
+    .testimonial-card,
+    .blog-card,
+    .certificate-card {
+        margin-bottom: 2rem;
+    }
+    
+    .gallery-item {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        min-height: 80vh;
+    }
+    
+    .hero-content {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .info-item {
+        padding: 0.75rem;
+    }
+    
+    .info-icon {
+        min-width: 30px;
+        font-size: 1.25rem;
+    }
+    
+    .service-icon-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .service-icon-circle i {
+        font-size: 2rem;
+    }
+    
+    .project-image,
+    .blog-image,
+    .certificate-image-wrapper {
+        height: 150px;
+    }
+    
+    .certificate-overlay {
+        padding: 1rem;
+    }
+    
+    .certificate-overlay h4 {
+        font-size: 1rem;
+    }
+}
+
+/* ====== Animation for Skills ====== */
+@keyframes fillSkillBar {
+    from { width: 0; }
+    to { width: var(--skill-width); }
+}
+
+/* ====== Typed Cursor ====== */
+.typed-cursor {
+    opacity: 1;
+    animation: typedjsBlink 0.7s infinite;
+}
+
+@keyframes typedjsBlink {
+    50% { opacity: 0; }
+}
+
+/* ====== AOS Animation Delay ====== */
+[data-aos] {
+    pointer-events: none;
+}
+
+[data-aos].aos-animate {
+    pointer-events: auto;
+}
+
+/* ====== Smooth Scrolling ====== */
+html {
+    scroll-behavior: smooth;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+// Initialize AOS animations
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100,
+        disable: 'mobile'
+    });
+
+    // Hero Video Management
+    function manageHeroBackground() {
+        const videoElement = document.querySelector('.hero-desktop-video');
+        const fallbackImage = document.querySelector('.hero-fallback-image');
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            if (videoElement) videoElement.style.display = 'none';
+            if (fallbackImage) fallbackImage.style.display = 'block';
+        } else {
+            if (videoElement) {
+                videoElement.style.display = 'block';
+                videoElement.play().catch(() => {
+                    if (fallbackImage) {
+                        videoElement.style.display = 'none';
+                        fallbackImage.style.display = 'block';
+                    }
+                });
+            }
+            if (fallbackImage) fallbackImage.style.display = 'none';
+        }
+    }
+
+    // Initialize hero background
+    manageHeroBackground();
+    
+    // Update on resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(manageHeroBackground, 250);
+    });
+
+    // Animate skill bars
+    function animateSkillBars() {
+        const skillBars = document.querySelectorAll('.skill-progress');
+        skillBars.forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            if (bar.style.width === '' || bar.style.width === '0%') {
+                setTimeout(() => {
+                    bar.style.width = width + '%';
+                }, 300);
+            }
+        });
+    }
+
+    // Observe skill section for animation
+    const skillsSection = document.getElementById('skills');
+    if (skillsSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateSkillBars();
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(skillsSection);
+    }
+
+    // Initialize Typed.js if available
+    if (typeof Typed !== 'undefined') {
+        const typedElement = document.querySelector('.typed-text');
+        if (typedElement) {
+            const items = typedElement.getAttribute('data-typed-items').split(',');
+            new Typed(typedElement, {
+                strings: items,
+                typeSpeed: 70,
+                backSpeed: 40,
+                backDelay: 1500,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|'
+            });
+        }
+    }
+
+    // Mobile carousel for cards
+    function initMobileCarousels() {
+        if (window.innerWidth <= 768) {
+            // Add carousel classes to card containers
+            const sections = ['services', 'projects', 'testimonials', 'blog', 'certificates'];
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const cardsContainer = section.querySelector('.row');
+                    if (cardsContainer) {
+                        cardsContainer.classList.add('mobile-carousel');
+                    }
+                }
+            });
+        }
+    }
+
+    initMobileCarousels();
+    window.addEventListener('resize', initMobileCarousels);
+
+    // Certificate image hover effect
+    const certificateCards = document.querySelectorAll('.certificate-card');
+    certificateCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.classList.add('hovered');
+        });
+        card.addEventListener('mouseleave', function() {
+            this.classList.remove('hovered');
+        });
+    });
+});
+
+// Mobile carousel script for manual swipe
+let touchStartX = 0;
+let touchEndX = 0;
+
+function handleTouchStart(event) {
+    touchStartX = event.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(event) {
+    touchEndX = event.changedTouches[0].screenX;
+    handleSwipe();
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const swipeDistance = touchEndX - touchStartX;
+    
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+        const currentSection = document.elementFromPoint(window.innerWidth/2, window.innerHeight/2).closest('section');
+        if (currentSection && currentSection.querySelector('.mobile-carousel')) {
+            const cards = currentSection.querySelectorAll('.mobile-carousel > [data-aos]');
+            const activeCard = currentSection.querySelector('.mobile-carousel > [data-aos].active');
+            let activeIndex = Array.from(cards).indexOf(activeCard);
+            
+            if (swipeDistance > 0 && activeIndex > 0) {
+                // Swipe right - previous card
+                cards[activeIndex].classList.remove('active');
+                cards[activeIndex - 1].classList.add('active');
+            } else if (swipeDistance < 0 && activeIndex < cards.length - 1) {
+                // Swipe left - next card
+                cards[activeIndex].classList.remove('active');
+                cards[activeIndex + 1].classList.add('active');
+            }
+        }
+    }
+}
+
+// Add touch events for mobile
+if ('ontouchstart' in window) {
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchend', handleTouchEnd, false);
+}
+</script>
+{% endblock %}

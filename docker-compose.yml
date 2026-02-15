@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: gunicorn portfolio_project.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"   # Host port 8000, can be mapped to 80 via reverse proxy like Nginx
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: portfolio_db
+      MYSQL_USER: portfolio_user
+      MYSQL_PASSWORD: strongpassword       # Change to strong password
+      MYSQL_ROOT_PASSWORD: verystrongrootpassword
+    # Removed ports mapping for production security
+    # Internal network only, Django can connect via 'db:3306'
+
+volumes:
+  mysql_data:
+  static_volume:
+  media_volume:

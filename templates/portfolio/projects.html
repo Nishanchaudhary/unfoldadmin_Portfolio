@@ -1,0 +1,372 @@
+<!-- templates/portfolio/projects.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Projects - {{ about.full_name|default:"Portfolio" }}</title>
+{% endblock %}
+
+{% block content %}
+<!-- Page Title -->
+<div class="page-title dark-background">
+  <div class="container d-lg-flex justify-content-between align-items-center">
+    <h1 class="mb-2 mb-lg-0">My Projects</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'portfolio:home' %}">Home</a></li>
+        <li class="current">Projects</li>
+      </ol>
+    </nav>
+  </div>
+</div><!-- End Page Title -->
+
+<!-- Projects Section -->
+<section id="projects" class="projects-section py-5 bg-light">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="section-header text-center mb-5" data-aos="fade-up">
+      <h2 class="section-title">All Projects</h2>
+      <p class="section-subtitle">Browse through my complete portfolio</p>
+    </div>
+
+    <!-- Project Category Filter -->
+    <div class="row mb-5" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-12">
+        <div class="category-filter text-center">
+          <div class="btn-group" role="group" aria-label="Project categories">
+            <a href="{% url 'portfolio:project_list' %}" 
+               class="btn {% if not selected_type %}btn-primary{% else %}btn-outline-primary{% endif %}">
+              All Projects
+            </a>
+            {% for type_code, type_name in project_types %}
+            <a href="{% url 'portfolio:project_list' %}?type={{ type_code }}" 
+               class="btn {% if selected_type == type_code %}btn-primary{% else %}btn-outline-primary{% endif %}">
+              {{ type_name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="row g-4">
+      {% for project in projects %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="project-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; height: 100%;">
+          {% if project.featured_image %}
+          <div class="project-image-wrapper" style="position: relative; height: 250px; overflow: hidden;">
+            <a href="{% url 'portfolio:project_detail' project.id %}" style="display: block; width: 100%; height: 100%; text-decoration: none;">
+              <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" 
+                   style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s ease;">
+            </a>
+            
+            <!-- Project Category Badge - Always Visible -->
+            <div class="project-category-badge" style="position: absolute; top: 15px; left: 15px; z-index: 2;">
+              <span class="badge bg-primary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                {{ project.get_project_type_display }}
+              </span>
+            </div>
+            
+            <!-- Image Zoom Icon (Top Right) -->
+            {% if project.featured_image %}
+            <a href="{{ project.featured_image.url }}" 
+               title="{{ project.title }}" 
+               data-gallery="project-gallery" 
+               class="glightbox"
+               style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.9); color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; z-index: 2;">
+              <i class="bi bi-zoom-in" style="font-size: 1rem;"></i>
+            </a>
+            {% endif %}
+          </div>
+          {% endif %}
+          
+          <!-- Project Info Below Image (Always Visible) -->
+          <div class="project-info-below" style="padding: 1.5rem;">
+            <!-- Project Title as Clickable Link -->
+            <h3 class="project-title" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #212529;">
+              <a href="{% url 'portfolio:project_detail' project.id %}" style="color: inherit; text-decoration: none;">
+                {{ project.title }}
+              </a>
+            </h3>
+            
+            <!-- Project Date (if available) -->
+            {% if project.start_date or project.end_date %}
+            <div class="project-date mb-2" style="font-size: 0.85rem; color: #6c757d;">
+              {% if project.start_date %}
+              <i class="bi bi-calendar me-1"></i>{{ project.start_date|date:"M Y" }}
+              {% endif %}
+              {% if project.end_date %}
+              - {{ project.end_date|date:"M Y" }}
+              {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Short Description -->
+            <p class="project-excerpt" style="color: #495057; font-size: 0.9rem; margin-bottom: 1.5rem; min-height: 40px;">
+              {{ project.description.html|striptags|truncatewords:15 }}
+            </p>
+            
+            <!-- Action Icons Row -->
+            <div class="project-action-icons" style="display: flex; gap: 1rem; margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem;">
+              <!-- View Details Link -->
+              <a href="{% url 'portfolio:project_detail' project.id %}" 
+                 class="action-icon" 
+                 title="View Details"
+                 style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                <i class="bi bi-eye" style="font-size: 1.1rem;"></i>
+              </a>
+              
+              <!-- Conditional: Live Demo Link -->
+              {% if project.live_url %}
+              <a href="{{ project.live_url }}" target="_blank" 
+                 class="action-icon" 
+                 title="Live Demo"
+                 style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                <i class="bi bi-play-circle" style="font-size: 1.1rem;"></i>
+              </a>
+              {% endif %}
+              
+              <!-- Conditional: GitHub Link -->
+              {% if project.github_url %}
+              <a href="{{ project.github_url }}" target="_blank" 
+                 class="action-icon" 
+                 title="GitHub Repository"
+                 style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; color: #4361ee; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                <i class="bi bi-github" style="font-size: 1.1rem;"></i>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5" data-aos="fade-up">
+        <h4 class="mb-3">No projects found</h4>
+        <p class="text-muted">{% if selected_type %}Try selecting a different category{% else %}Projects will be added soon{% endif %}</p>
+        {% if selected_type %}
+        <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary mt-3">
+          View All Projects
+        </a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-5" data-aos="fade-up" data-aos-delay="400">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}">Previous</a>
+          </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ num }}{% if selected_type %}&type={{ selected_type }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+  </div>
+</section><!-- /Projects Section -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ====== Global Styles ====== */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3a0ca3;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --text-color: #495057;
+    --border-color: #dee2e6;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+}
+
+/* Category Filter Buttons */
+.category-filter .btn-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.category-filter .btn {
+    border-radius: 25px !important;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
+/* Project Card Hover Effects - Simplified */
+.project-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.project-card:hover .project-image-wrapper img {
+    transform: scale(1.05) !important;
+}
+
+/* Action Icons Hover */
+.action-icon:hover {
+    background: #4361ee !important;
+    color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+}
+
+/* Image Zoom Icon Hover */
+.project-image-wrapper .glightbox:hover {
+    background: #4361ee !important;
+    color: white !important;
+}
+
+/* Pagination Styling */
+.page-item.active .page-link {
+    background-color: #4361ee;
+    border-color: #4361ee;
+}
+
+.page-link {
+    color: #4361ee;
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+    color: #3a0ca3;
+    background-color: #f8f9fa;
+}
+
+/* Project Title Link Hover */
+.project-title a:hover {
+    color: #4361ee !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .project-image-wrapper {
+        height: 200px !important;
+    }
+    
+    .project-info-below {
+        padding: 1rem !important;
+    }
+    
+    .action-icon {
+        width: 35px !important;
+        height: 35px !important;
+    }
+    
+    .action-icon i {
+        font-size: 1rem !important;
+    }
+    
+    .project-image-wrapper .glightbox {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    
+    .category-filter .btn {
+        padding: 0.4rem 1rem !important;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .project-image-wrapper {
+        height: 180px !important;
+    }
+    
+    .project-title {
+        font-size: 1.1rem !important;
+    }
+    
+    .project-action-icons {
+        gap: 0.5rem !important;
+    }
+    
+    .project-excerpt {
+        font-size: 0.85rem !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize GLightbox for project images
+    if (typeof GLightbox !== 'undefined') {
+        const lightbox = GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: true,
+            autoplayVideos: false
+        });
+    }
+    
+    // Add hover effects to project cards
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const image = this.querySelector('.project-image-wrapper img');
+            if (image) image.style.transform = 'scale(1.05)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const image = this.querySelector('.project-image-wrapper img');
+            if (image) image.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Add hover effects to action icons
+    const actionIcons = document.querySelectorAll('.action-icon');
+    actionIcons.forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 5px 15px rgba(67, 97, 238, 0.3)';
+        });
+        
+        icon.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+    
+    // Add hover effects to image zoom icons
+    const imageZoomIcons = document.querySelectorAll('.project-image-wrapper .glightbox');
+    imageZoomIcons.forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+            this.style.background = '#4361ee';
+            this.style.color = 'white';
+        });
+        
+        icon.addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255,255,255,0.9)';
+            this.style.color = '#4361ee';
+        });
+    });
+});
+</script>
+{% endblock %}
