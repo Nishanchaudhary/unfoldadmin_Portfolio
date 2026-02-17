@@ -1,12 +1,5 @@
-###Django Database Query Optimization – Production Guide
-https://img.shields.io/badge/Django-5.2.6-092E20?style=flat&logo=django&logoColor=white
-https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white
-https://img.shields.io/badge/PostgreSQL-15+-336791?style=flat&logo=postgresql&logoColor=white
-https://img.shields.io/badge/MySQL-8.0+-4479A1?style=flat&logo=mysql&logoColor=white
-https://img.shields.io/badge/License-MIT-yellow.svg
-https://img.shields.io/badge/version-2.0.0-blue.svg
-https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-https://img.shields.io/badge/contributions-welcome-orange.svg
+##Django Database Query Optimization – Production Guide
+
 
 A comprehensive production-ready guide to Django ORM optimization techniques, performance tuning, and database best practices. This guide covers essential patterns, common pitfalls, and advanced strategies to build scalable, high-performance Django applications.
 
